@@ -1,5 +1,7 @@
+import { QuestionsList } from './components/QuestionsList';
+
 function App() {
-    return <div className="App">App</div>;
+    return <QuestionsList></QuestionsList>;
 }
 
 export default App;
