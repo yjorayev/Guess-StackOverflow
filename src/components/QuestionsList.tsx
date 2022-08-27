@@ -1,4 +1,5 @@
-import { DetailsList, DetailsListLayoutMode, IColumn, Link, SelectionMode, Stack, Text } from '@fluentui/react';
+import { DetailsList, DetailsListLayoutMode, IColumn, SelectionMode, Stack, Text } from '@fluentui/react';
+import { Link } from 'react-router-dom';
 import { Question } from '../models';
 import { Api } from '../services/Api';
 
@@ -11,8 +12,9 @@ export const QuestionsList = () => {
             fieldName: 'title',
             minWidth: 500,
             flexGrow: 1,
+            calculatedWidth: 0,
             isResizable: true,
-            onRender: (item: Question) => <Link>{item.title}</Link>,
+            onRender: (item: Question) => <Link to={{ pathname: `/question/${item.question_id}` }}>{item.title}</Link>,
         },
         {
             key: 'creation_date',
@@ -27,7 +29,8 @@ export const QuestionsList = () => {
             name: 'Answer Count',
             fieldName: 'answer_count',
             minWidth: 100,
-            flexGrow: 2,
+            flexGrow: 1,
+            calculatedWidth: 0,
             isResizable: true,
         },
     ];
