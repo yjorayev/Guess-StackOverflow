@@ -45,7 +45,7 @@ export const QuestionsList = () => {
             name: 'Craetion Date',
             fieldName: 'creation_date',
             minWidth: 300,
-            onRender: (item: Question) => <span>{new Date(item.creation_date).toUTCString()}</span>,
+            onRender: (item: Question) => <span>{new Date(item.creation_date * 1000).toUTCString()}</span>,
             isResizable: true,
         },
         {
