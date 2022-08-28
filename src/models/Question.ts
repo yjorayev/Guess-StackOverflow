@@ -1,4 +1,5 @@
 export type Question = {
+    accepted_answer_id?: number;
     answer_count: number;
     creation_date: number;
     is_answered: boolean;
@@ -8,5 +9,6 @@ export type Question = {
     score: number;
     title: string;
     view_count: number;
+    body: string;
     tags: string[];
 };

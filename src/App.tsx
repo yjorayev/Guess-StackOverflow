@@ -1,5 +1,5 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import { QuestionContainer, QuestionsList } from './components';
+import { QuestionsList, QuestionWithAnswers } from './components';
 
 function App() {
     return (
@@ -7,7 +7,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<Navigate to="/questions" />} />
                 <Route path="/questions" element={<QuestionsList></QuestionsList>} />
-                <Route path="/question" element={<QuestionContainer></QuestionContainer>} />
+                <Route path="/question/:id" element={<QuestionWithAnswers></QuestionWithAnswers>} />
             </Routes>
         </BrowserRouter>
     );

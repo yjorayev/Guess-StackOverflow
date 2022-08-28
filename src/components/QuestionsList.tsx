@@ -3,14 +3,14 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Question } from '../models';
 import { Api } from '../services/Api';
+import { decodeHtml } from '../services/Helpers';
 
 export const QuestionsList = () => {
     const [questions, setQuestions] = React.useState<Question[]>([]);
 
     React.useEffect(() => {
         const getQuestions = async () => {
-            //    const response = await Api.getQuestions();
-            const response = Api.get();
+            const response = await Api.getQuestions();
 
             setQuestions(response);
         };
@@ -28,8 +28,8 @@ export const QuestionsList = () => {
             calculatedWidth: 0,
             isResizable: true,
             onRender: (item: Question) => (
-                <Link to="/question" state={{ question: item }}>
-                    {item.title}
+                <Link key={item.question_id} to={`/question/${item.question_id}`} state={{ question: item }}>
+                    {decodeHtml(item.title)}
                 </Link>
             ),
         },
@@ -65,7 +65,6 @@ export const QuestionsList = () => {
                 compact={true}
                 selectionMode={SelectionMode.none}
                 layoutMode={DetailsListLayoutMode.fixedColumns}
-                styles={{ root: { padding: 0 } }}
             />
         </>
     );

@@ -1,19 +1,13 @@
-import { MessageBar, MessageBarType, Stack, Text } from '@fluentui/react';
-import { useLocation } from 'react-router-dom';
+import { Text } from '@fluentui/react';
 import { Question } from '../models';
+import { decodeHtml } from '../services/Helpers';
+import { SanitizeHtml } from './SanitizeHtml';
 
-type QuestionProps = {};
-
-export const QuestionContainer = (props: QuestionProps) => {
-    const location = useLocation();
-    const state = location.state as { question: Question };
-    const question: Question = state?.question;
-
-    return question ? (
-        <Stack horizontalAlign="start" tokens={{ maxWidth: '100%' }}>
-            <Text variant="large">{question.title}</Text>
-        </Stack>
-    ) : (
-        <MessageBar messageBarType={MessageBarType.error}>Error loading the question.</MessageBar>
+export const QuestionContainer = (props: { question: Question }) => {
+    return (
+        <>
+            <Text variant="xLarge">{decodeHtml(props.question.title)}</Text>
+            <SanitizeHtml htmlString={decodeHtml(props.question.body)} />
+        </>
     );
 };
