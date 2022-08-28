@@ -24,8 +24,10 @@ import { arrayShuffle, decodeHtml } from '../services/Helpers';
 import { QuestionContainer } from './QuestionContainer';
 import { SanitizeHtml } from './SanitizeHtml';
 import { useConst } from '@fluentui/react-hooks';
+import { Container } from './Container';
 
 export const QuestionWithAnswers = () => {
+    const [error, setError] = React.useState<string>();
     const [answers, setAnswers] = React.useState<Answer[]>([]);
     const [hideDialog, setHideDialog] = React.useState(true);
     const [selectedAnswer, setSelectedAnswer] = React.useState<Answer>();
@@ -43,8 +45,14 @@ export const QuestionWithAnswers = () => {
     React.useEffect(() => {
         const getAnswers = async () => {
             let response = await Api.getAnswers(question.question_id);
-            response = arrayShuffle(response);
-            setAnswers(response);
+            if (response.has_error) {
+                setError(response.error_message);
+            } else {
+                setError(undefined);
+            }
+
+            const items = arrayShuffle(response.body.items!);
+            setAnswers(items);
         };
 
         getAnswers();
@@ -103,46 +111,49 @@ export const QuestionWithAnswers = () => {
         navigate({ pathname: '/questions' });
     };
 
-    return question ? (
-        <>
-            <PrimaryButton
-                onClick={checkAnswer}
-                style={{ position: 'sticky', top: 10, float: 'right' }}
-                disabled={!selectedAnswer}
-            >
-                Check Answer
-            </PrimaryButton>
-
-            <Stack horizontalAlign="start" tokens={{ maxWidth: '100%', childrenGap: 10, padding: 10 }}>
-                <QuestionContainer question={question}></QuestionContainer>
-                <StackItem align="center">
-                    <Text variant="large">Pick your answer:</Text>
-                </StackItem>
-                <DetailsList
-                    items={answers}
-                    key="questionsList"
-                    columns={columns}
-                    compact={true}
-                    selectionMode={SelectionMode.single}
-                    isHeaderVisible={false}
-                    selection={selection}
-                />
-
-                <Dialog
-                    hidden={hideDialog}
-                    onDismiss={() => setHideDialog(true)}
-                    dialogContentProps={dialogContentProps}
+    return (
+        <Container error={error}>
+            question ? (
+            <>
+                <PrimaryButton
+                    onClick={checkAnswer}
+                    style={{ position: 'sticky', top: 10, float: 'right' }}
+                    disabled={!selectedAnswer}
                 >
-                    <DialogFooter>
-                        <PrimaryButton onClick={showQuestions} text="Show questions" />
-                        {!selectedAnswer?.is_accepted && (
-                            <DefaultButton onClick={() => setHideDialog(true)} text="Try again" />
-                        )}
-                    </DialogFooter>
-                </Dialog>
-            </Stack>
-        </>
-    ) : (
-        <MessageBar messageBarType={MessageBarType.error}>Error loading the question.</MessageBar>
+                    Check Answer
+                </PrimaryButton>
+
+                <Stack horizontalAlign="start" tokens={{ maxWidth: '100%', childrenGap: 10, padding: 10 }}>
+                    <QuestionContainer question={question}></QuestionContainer>
+                    <StackItem align="center">
+                        <Text variant="large">Pick your answer:</Text>
+                    </StackItem>
+                    <DetailsList
+                        items={answers}
+                        key="questionsList"
+                        columns={columns}
+                        compact={true}
+                        selectionMode={SelectionMode.single}
+                        isHeaderVisible={false}
+                        selection={selection}
+                    />
+
+                    <Dialog
+                        hidden={hideDialog}
+                        onDismiss={() => setHideDialog(true)}
+                        dialogContentProps={dialogContentProps}
+                    >
+                        <DialogFooter>
+                            <PrimaryButton onClick={showQuestions} text="Show questions" />
+                            {!selectedAnswer?.is_accepted && (
+                                <DefaultButton onClick={() => setHideDialog(true)} text="Try again" />
+                            )}
+                        </DialogFooter>
+                    </Dialog>
+                </Stack>
+            </>
+            ) : (<MessageBar messageBarType={MessageBarType.error}>Error loading the question.</MessageBar>
+            );
+        </Container>
     );
 };

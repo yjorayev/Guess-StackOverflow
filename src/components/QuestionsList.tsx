@@ -4,15 +4,22 @@ import { Link } from 'react-router-dom';
 import { Question } from '../models';
 import { Api } from '../services/Api';
 import { decodeHtml } from '../services/Helpers';
+import { Container } from './Container';
 
 export const QuestionsList = () => {
     const [questions, setQuestions] = React.useState<Question[]>([]);
+    const [error, setError] = React.useState<string>();
 
     React.useEffect(() => {
         const getQuestions = async () => {
             const response = await Api.getQuestions();
+            if (response.has_error) {
+                setError(response.error_message);
+            } else {
+                setError(undefined);
+            }
 
-            setQuestions(response);
+            setQuestions(response.body.items!);
         };
 
         getQuestions();
@@ -53,19 +60,21 @@ export const QuestionsList = () => {
     ];
 
     return (
-        <>
+        <Container error={error}>
             <Stack horizontalAlign="center">
                 <Text variant="xLargePlus">Pick a question</Text>
             </Stack>
 
-            <DetailsList
-                key="questionsList"
-                items={questions}
-                columns={columns}
-                compact={true}
-                selectionMode={SelectionMode.none}
-                layoutMode={DetailsListLayoutMode.fixedColumns}
-            />
-        </>
+            {questions && (
+                <DetailsList
+                    key="questionsList"
+                    items={questions}
+                    columns={columns}
+                    compact={true}
+                    selectionMode={SelectionMode.none}
+                    layoutMode={DetailsListLayoutMode.fixedColumns}
+                />
+            )}
+        </Container>
     );
 };
