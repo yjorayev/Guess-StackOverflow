@@ -1,10 +1,23 @@
 import { DetailsList, DetailsListLayoutMode, IColumn, SelectionMode, Stack, Text } from '@fluentui/react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Question } from '../models';
 import { Api } from '../services/Api';
 
 export const QuestionsList = () => {
-    const response = Api.get<Question[]>();
+    const [questions, setQuestions] = React.useState<Question[]>([]);
+
+    React.useEffect(() => {
+        const getQuestions = async () => {
+            //    const response = await Api.getQuestions();
+            const response = Api.get();
+
+            setQuestions(response);
+        };
+
+        getQuestions();
+    }, []);
+
     const columns: IColumn[] = [
         {
             key: 'title',
@@ -14,7 +27,11 @@ export const QuestionsList = () => {
             flexGrow: 1,
             calculatedWidth: 0,
             isResizable: true,
-            onRender: (item: Question) => <Link to={{ pathname: `/question/${item.question_id}` }}>{item.title}</Link>,
+            onRender: (item: Question) => (
+                <Link to="/question" state={{ question: item }}>
+                    {item.title}
+                </Link>
+            ),
         },
         {
             key: 'creation_date',
@@ -43,7 +60,7 @@ export const QuestionsList = () => {
 
             <DetailsList
                 key="questionsList"
-                items={response}
+                items={questions}
                 columns={columns}
                 compact={true}
                 selectionMode={SelectionMode.none}

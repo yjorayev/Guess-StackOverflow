@@ -7,7 +7,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<Navigate to="/questions" />} />
                 <Route path="/questions" element={<QuestionsList></QuestionsList>} />
-                <Route path="/question/:question_id" element={<QuestionContainer></QuestionContainer>} />
+                <Route path="/question" element={<QuestionContainer></QuestionContainer>} />
             </Routes>
         </BrowserRouter>
     );
